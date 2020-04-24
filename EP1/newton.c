@@ -221,7 +221,6 @@ void newton_basins (double l1, double l2, double u1, double u2, int p1, int p2) 
     for (int i = 0; i < p1*p2; i++) {
         ans[i] = newton(Z[i], EPS, 400, iters+i);
         root_ids[i] = get_root_id(ans[i]);
-        c[root_ids[i]] += 1;
         max_iters = (iters[i] > max_iters ? iters[i] : max_iters);
 
         if (!ITERS_COLOR_SHADING)
