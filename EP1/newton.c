@@ -4,8 +4,7 @@
 #include <complex.h>
 
 #define EPS 1E-8
-
-int c[19] = {0};
+#define ITERS_COLOR_SHADING 1
 
 double complex rootlist_f1[4] = {-1, 1, -I, I};
 
@@ -76,7 +75,7 @@ double complex evalDf (double complex x) {
  *   returns: x^10 - 1
  */
 double complex evalf (double complex x) {
-    return csin(x);
+    return cpow(x, 8) - 17*cpow(x, 4) + 16;
 }
 
 /*
@@ -85,11 +84,11 @@ double complex evalf (double complex x) {
  *   Evaluates 10x^9
  *
  *   x: point to evaluate function at
- *
+ * 
  *   returns: 10x^9
  */
 double complex evalDf (double complex x) {
-    return ccos(x);
+    return 8 * cpow(x, 7) - 68 * cpow(x, 3);
 }
 
 
@@ -143,17 +142,24 @@ void generate_initial_guesses (double complex *arr, double *x, double *y, int p1
  *   x0: initial guess
  *   eps: precision to consider a root found 
  *   max_iters: maximum number of iterations to perform
+ *   iters: pointer to array to save number of iterations
  *
  *   returns: a root or NAN if method did not converge
  */
-double complex newton (double complex x0, double eps, int max_iters) {
+double complex newton (double complex x0, double eps, int max_iters, int* iters) {
     int i = 0;
     double complex x = x0;
     
     while (cabs(evalf(x)) > eps && i++ <= max_iters)
         x = x - evalf(x) / evalDf(x);
 
-    return (cabs(evalf(x)) < eps) ? x : NAN;
+    if (cabs(evalf(x)) < eps) {
+        *iters = i;
+        return x;
+    } else {
+        *iters = -1;
+        return NAN;
+    }
 }
 
 /*
@@ -170,12 +176,11 @@ int get_root_id (double complex x) {
     // if x is NaN then x != x
     if (x != x) return -1;
     
-    int i, n = sizeof(rootlist_f4) / sizeof(rootlist_f4[0]);
+    int n = sizeof(rootlist_f5) / sizeof(rootlist_f5[0]);
     
-    for (i = 0; i < n; i++)
-        if (cabs(rootlist_f4[i]-x) < EPS)
+    for (int i = 0; i < n; i++)
+        if (cabs(rootlist_f5[i]-x) < EPS)
             return i;
-    //fprintf(stderr, "%.10f + %.10f\n", creal(x), cimag(x));
     return -1;
 }
 
@@ -212,21 +217,33 @@ void newton_basins (double l1, double l2, double u1, double u2, int p1, int p2) 
     generate_points(Y, l2, u2, p2);
     generate_initial_guesses(Z, X, Y, p1, p2);
 
-    //printf("%.2f //printf("ans[%d] = %f%+fi, root_ids[%d] = %d\n", i, creal(ans[i]), cimag(ans[i]), i, root_ids[i]);%.2f %.2f %.2f %d %d\n", l1, l2, u1, u2, p1, p2);
-
+    int max_iters = -1;
     for (int i = 0; i < p1*p2; i++) {
-        ans[i] = newton(Z[i], EPS, 400);
-        root_ids[i] = get_root_id(ans[i], Z[i]);
+        ans[i] = newton(Z[i], EPS, 400, iters+i);
+        root_ids[i] = get_root_id(ans[i]);
         c[root_ids[i]] += 1;
-        //printf("%d %d\n", root_ids[i], iters[i]);
-        printf("%.10lf %.10lf %d\n", creal(Z[i]), cimag(Z[i]), root_ids[i]);
+        max_iters = (iters[i] > max_iters ? iters[i] : max_iters);
+
+        if (!ITERS_COLOR_SHADING)
+            printf("%.10lf %.10lf %d\n", creal(Z[i]), cimag(Z[i]), root_ids[i]);
+    }
+
+    // apply color shading if desired
+    if (ITERS_COLOR_SHADING) {
+        for (int i = 0; i < p1*p2; i++) {
+            if (iters[i] > 0) {
+                // used only for bonus image
+                // double logiters = (double) iters[i];
+                double logiters = root_ids[i] - 0.99 * log((double)iters[i] / max_iters);
+                printf("%.10lf %.10lf %.2f\n", creal(Z[i]), cimag(Z[i]), logiters);
+            } else {
+                printf("%.10lf %.10lf %d\n", creal(Z[i]), cimag(Z[i]), root_ids[i]);
+            }
+        }
     }
 }
 
 int main() {
-    int i;
-    newton_basins(-4, -4, 4, 4, 1000, 1000);
-
-    for (i = 0; i < 19; i++) fprintf(stderr, "%d ", c[i]);
+    newton_basins(-2, -2, 2, 2, 1000, 1000);
     return 0;
 }

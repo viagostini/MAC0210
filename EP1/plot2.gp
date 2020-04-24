@@ -1,6 +1,6 @@
 
 set terminal png size 1000, 764
-set output 'images/newton_basins_f6.png'
+set output 'images/newton_basins_f5_iters_2.png'
 
 unset key
 
@@ -10,11 +10,11 @@ set style data lines
 unset colorbox
 
 # set this according to number of expected roots
-set cbrange [-1 : 2] noreverse nowriteback
+set cbrange [-1 : 9] noreverse nowriteback
 
 set palette rgbformulae 7, 5, 15
 
-set xrange [-4:4]
-set yrange [-4:4]
+set xrange [-2:2]
+set yrange [-2:2]
 
-plot 'output_f6.txt' using 1:2:3 with image
+plot 'output_teste_3.txt' using 1:2:3 with image
