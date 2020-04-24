@@ -1,6 +1,6 @@
 
 set terminal png size 1000, 764
-set output 'images/newton_basins_f5_iters_2.png'
+set output 'images/newton_basins.png'
 
 unset key
 
@@ -17,4 +17,4 @@ set palette rgbformulae 7, 5, 15
 set xrange [-2:2]
 set yrange [-2:2]
 
-plot 'output_teste_3.txt' using 1:2:3 with image
+plot '/output/newton_basins.txt' using 1:2:3 with image

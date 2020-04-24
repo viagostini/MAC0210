@@ -6,7 +6,7 @@
 
 #define		f(x)  	(exp(x) - 2 * x * x)
 #define 	df(x) 	(exp(x) - 4 * x)
-//#define   g(x)   	exp(x) / (2 * x)
+//#define     g(x)   	exp(x) / (2 * x)
 #define 	g(x)  	x - f(x) / df(x)
 //#define	g(x)	log(2) + 2 * log(x)
 
@@ -62,7 +62,7 @@ int main() {
 	printf("Enter maximum iteration: ");
 	scanf("%d", &max_iters);
 
-	printf("\nFixed Point Method for g(x) = x - f(x)/df(x):\n");
+	printf("\nFixed Point Method for g(x) = exp(x) / (2 * x):\n");
 
 	x = fixed_point(x0, eps, max_iters, &iter);
 
