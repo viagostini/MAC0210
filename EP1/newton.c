@@ -3,67 +3,26 @@
 #include <stdlib.h>
 #include <complex.h>
 
+/*
+ * Global Constants and Output File
+ * --------------------------------
+ */
 #define EPS 1E-8
-#define ITERS_COLOR_SHADING 1
-
-double complex rootlist_f1[4] = {-1, 1, -I, I};
+#define ITERS_COLOR_SHADING 0
+FILE *out;
 
 /*
  * Global Array: rootlist
  * ----------------------------
  *   Contains roots of x^10 - 1
  */
-double complex rootlist_f2[10] = {
+double complex rootlist[10] = {
     -1, 1,
     0.809016994 + 0.587785252*I, -0.809016994 - 0.587785252*I,
     0.309016994 + 0.951056516*I, -0.309016994 - 0.951056516*I,
     -0.309016994 + 0.951056516*I, 0.309016994 - 0.951056516*I,
     -0.809016994 + 0.587785252*I, 0.809016994 - 0.587785252*I
 };
-double complex rootlist_f3[11] = {
-    0,
-    -5 * M_PI, 5 * M_PI,
-    -4 * M_PI, 4 * M_PI,
-    -3 * M_PI, 3 * M_PI,
-    -2 * M_PI, 2 * M_PI,
-    -M_PI, M_PI
-};
-
-double complex rootlist_f4[19] = {
-    0,
-    -9 * M_PI, 9 * M_PI,
-    -8 * M_PI, 8 * M_PI,
-    -7 * M_PI, 7 * M_PI,
-    -6 * M_PI, 6 * M_PI,
-    -5 * M_PI, 5 * M_PI,
-    -4 * M_PI, 4 * M_PI,
-    -3 * M_PI, 3 * M_PI,
-    -2 * M_PI, 2 * M_PI,
-    -M_PI, M_PI
-};
-
-double complex rootlist_f5[8] = {
-    -2, 2, -1, 1, -I, I, 2*I, -2*I
-};
-
-double complex rootlist_f6[3] = {-3, -1, 2};
-
-/* double complex evalf (double complex x) {
-   return cpow(x, 8) - 17 * cpow(x, 4) + 16;
-}
-
-double complex evalDf (double complex x) {
-   return 8 * cpow(x, 7) - 68 * cpow(x, 3);
-} */
-
-/* double complex evalf (double complex x) {
-    return (x+3) * (x-2) * (x-2) * (x+1) * (x+1) * (x+1);
-}
-
-double complex evalDf (double complex x) {
-    return 2 * (x+1) * (x+1) * (3*x*x*x - x*x - 17*x + 14);
-} */
-
 
 /*
  * Function: evalf
@@ -75,7 +34,7 @@ double complex evalDf (double complex x) {
  *   returns: x^10 - 1
  */
 double complex evalf (double complex x) {
-    return cpow(x, 8) - 17*cpow(x, 4) + 16;
+    return cpow(x, 10) - 1;
 }
 
 /*
@@ -88,7 +47,7 @@ double complex evalf (double complex x) {
  *   returns: 10x^9
  */
 double complex evalDf (double complex x) {
-    return 8 * cpow(x, 7) - 68 * cpow(x, 3);
+    return 10 * cpow(x, 9);
 }
 
 
@@ -176,10 +135,10 @@ int get_root_id (double complex x) {
     // if x is NaN then x != x
     if (x != x) return -1;
     
-    int n = sizeof(rootlist_f5) / sizeof(rootlist_f5[0]);
+    int n = sizeof(rootlist) / sizeof(rootlist[0]);
     
     for (int i = 0; i < n; i++)
-        if (cabs(rootlist_f5[i]-x) < EPS)
+        if (cabs(rootlist[i]-x) < EPS)
             return i;
     return -1;
 }
@@ -224,7 +183,7 @@ void newton_basins (double l1, double l2, double u1, double u2, int p1, int p2) 
         max_iters = (iters[i] > max_iters ? iters[i] : max_iters);
 
         if (!ITERS_COLOR_SHADING)
-            printf("%.10lf %.10lf %d\n", creal(Z[i]), cimag(Z[i]), root_ids[i]);
+            fprintf(out, "%.10lf %.10lf %d\n", creal(Z[i]), cimag(Z[i]), root_ids[i]);
     }
 
     // apply color shading if desired
@@ -234,15 +193,20 @@ void newton_basins (double l1, double l2, double u1, double u2, int p1, int p2) 
                 // used only for bonus image
                 // double logiters = (double) iters[i];
                 double logiters = root_ids[i] - 0.99 * log((double)iters[i] / max_iters);
-                printf("%.10lf %.10lf %.2f\n", creal(Z[i]), cimag(Z[i]), logiters);
+                fprintf(out, "%.10lf %.10lf %.2f\n", creal(Z[i]), cimag(Z[i]), logiters);
             } else {
-                printf("%.10lf %.10lf %d\n", creal(Z[i]), cimag(Z[i]), root_ids[i]);
+                fprintf(out, "%.10lf %.10lf %d\n", creal(Z[i]), cimag(Z[i]), root_ids[i]);
             }
         }
     }
 }
 
 int main() {
+    out = fopen("newton_basins.txt", "w");
+
     newton_basins(-2, -2, 2, 2, 1000, 1000);
+
+    fclose(out);
+    
     return 0;
 }

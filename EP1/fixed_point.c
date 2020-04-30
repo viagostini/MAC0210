@@ -1,13 +1,11 @@
-
 #include <stdio.h>
 #include <math.h>
 
-#define DEBUG 0
-
 #define		f(x)  	(exp(x) - 2 * x * x)
 #define 	df(x) 	(exp(x) - 4 * x)
-//#define     g(x)   	exp(x) / (2 * x)
 #define 	g(x)  	x - f(x) / df(x)
+
+//#define   g(x)   	exp(x) / (2 * x)
 //#define	g(x)	log(2) + 2 * log(x)
 
 
@@ -26,29 +24,13 @@ double fixed_point (double x0, double eps, int max_iters, int *iters) {
 	int step;
 	double x1;
 
-	if (DEBUG)
-		printf("\nStep\t x\t\t g(x)\t\t f(x)\n");
-
 	for (step = 1; step <= max_iters && fabs(f(x1)) > eps; step++) {
 		x1 = g(x0);
-		
-		if (DEBUG)
-			printf("%d\t %lf\t %lf\t %.15lf\n", step, x0, g(x0), f(x0));		  
-		
 		x0 = x1;
 	}
 
-	if (DEBUG)
-		printf("%d\t %lf\t %lf\t %.15lf\n", step, x0, g(x0), f(x0));
-
-
 	*iters = (fabs(f(x1)) < eps) ? step : -1;
 	return (fabs(f(x1)) < eps) ? x1 : NAN;
-
-/* 	if (step > max_iters)
-		printf("\nMethod did not converge.");
-	else
-		printf("\nRoot is %.15lf\n", x1); */
 }
 
 int main() {

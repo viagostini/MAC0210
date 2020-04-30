@@ -15,3 +15,5 @@ newton: newton.c
 clean:
 	rm -f fixed_point
 	rm -f newton
+	rm newton_basins.txt
+	rm newton_basins.png

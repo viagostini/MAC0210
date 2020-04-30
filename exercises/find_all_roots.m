@@ -60,15 +60,6 @@ function y = fsinc (x)
     y;
 endfunction
 
-function y = k (x)
-    if x == 0
-        y = 0;
-    else
-        y = (x .* cos(x) .- sin(x)) ./ (x.*x);
-    end
-    y;
-endfunction
-
 function s = find_sign_change (f, a, b, nprobe)
     probes = linspace(a, b, nprobe);
     fp = f(probes);
