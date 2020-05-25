@@ -89,17 +89,66 @@ As condições de continuidade de $S'(x)$ necessitam que:
 
 \begin{align*}
     S_{i-1}'(t_i) &= S_i'(t_i)           &i = 1,2,\ldots, n-1\\
-    S_i'(t_i)     &= -\frac{z_i}{2h_i}(-h_i)^2 + \underbrace{\frac{y_{i+1} - y_z}{h_i}}_{b_i} - \frac{z_{i+1} - z_i}{6}h_i\\
+    S_i'(t_i)     &= -\frac{z_i}{2h_i}(-h_i)^2 + \underbrace{\frac{y_{i+1} - y_i}{h_i}}_{b_i} - \frac{z_{i+1} - z_i}{6}h_i\\
                   &= -\frac 16 h_iz_{i+1} - \frac 13 h_iz_i + b_i\\
     S_{i-1}'(t_i) &= \frac 16 z_{i-1}h_{i-1} + \frac 13 z_ih_{i-1} + b_{i-1}\\
     \intertext{Igualando as equações e manipulando algebricamente:}
-    h_{i-1}z_{h-1} + 2(h_{i-1} &+ h_i)z_i + h_iz_{i+1} = 6(b_i - b_{i-1})     &i=1,2,\ldots,n-1
-    \intertext{Pelas condições not-a-knot:}
-    S_i'''(t_i) &= \frac{z_{i+1}}{h_i} - \frac{z_i}{h_i}\\
-    S_0'''(t_1) &= \frac{z_1}{h_0} - \frac{z_0}{h_0} = \frac{z_2}{h_1} - \frac{z_1}{h_1} = S_{1}'''(t_1)\\
-    S_{n-2}'''(t_{n-1}) &= \frac{z_{n-1}}{h_{n-2}} - \frac{z_{n-2}}{h_{n-2}} = \frac{z_n}{h_{n-1}} - \frac{z_{n-1}}{h_{n-1}} = S_{n-1}'''(t_{n-1})
+    h_{i-1}z_{i-1} + 2(h_{i-1} &+ h_i)z_i + h_iz_{i+1} = 6(b_i - b_{i-1})     &i=1,2,\ldots,n-1
 \end{align*}
 
+Pelas condições not-a-knot temos que $S_0 \equiv S_1$ e $S_{n-2} \equiv S_{n-1}$
+já que são iguais até a terceira derivada.
+
+Então temos o sistema:
+
+$$ \begin{cases}
+    h_{i-1}z_{i-1} + 2(h_{i-1} + h_i)z_i + h_iz_{i+1} = 6(b_i - b_{i-1})   \qquad \qquad  i=1,2,\ldots,n-2\\
+    z_0 = z_1\\
+    z_{n-2} = z_{n-1}
+\end{cases} $$
+
+que vamos escrever na forma $H \cdot \vec{z} = \vec{b}$:
+
+$$
+\begin{pmatrix}
+    3h_0 + 2h_1 & h_1          &                             \\
+    h_1         & 2(h_1 + h_2) & h_2                         \\
+%                & h_2          & 2(h_2 + h_3)   & h_3        \\
+                & \ddots       & \ddots         & \ddots     \\
+                &              & h_{n-4}        & 2(h_{n-4} + h_{n-3}) & h_{n-3} \\
+                &              &                & h_{n-3}        & 2(h_{n-3} + h_{n-2}) & h_{n-2}
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+    z_1\\
+    z_2\\
+%    z_3\\
+    \vdots\\
+    z_{n-3}\\
+    z_{n-2}
+\end{pmatrix}
+=
+\begin{pmatrix}
+    6(b_1-b_0)\\
+    6(b_2-b_1)\\
+%    6(b_3-b_2)\\
+    \vdots\\
+    6(b_{n-3}-b_{n-4})\\
+    6(b_{n-2}-b_{n-3})
+\end{pmatrix}
+$$
+
+Podemos ver que a matriz $H$ é tridiagonal e também estritamente diagonal dominante
+já que 
+$
+\begin{cases}
+    3h_0 + 2h_1 > |h_0 + h_1| > |h_1|\\
+    2 |h_{i-1} + h_i| > |h_{i-1}| + |h_i|
+\end{cases}
+$.
+
+Uma vez que este sistema for resolvido, obtemos $z_0$ e $z_{n-1}$ a partir das
+condições not-a-knot que estabelecemos anteriormente.
 %Utilizando as igualdades \textit{not-a-knot} podemos escrever $S_i'''(x)$ para
 %s casos em que garantimos a sua existência, então:
 
