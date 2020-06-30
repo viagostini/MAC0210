@@ -1,102 +1,58 @@
-function bicubic(compressedImg, method, k, h)
-    tic
+function D = bicubic(compressedImg, method, k, h)
     A = imread(compressedImg);
-    [a, l, colors] = size(A);
+    [a, l, ncolors] = size(A);
     
+    # para lidar com imagens PB e RGB
+    D = cast(expand(A, k), class(A));
     p = a+(a-1)*k;
 
-    M = uint8(expand(A, k));
+    H = [  1,   0,   0,    0;
+           1,   h,  h^2,   h^3;
+           0,   1,   0,    0;
+           0,   1,  2*h,  3*h^2  ];
 
-    T = [  1,   0,   0,   0;
-           1,   h,  h^2,  h^3;
-           0,   1,   0,   0;
-           0,   1,  2*h, 3*h^2   ];
+    Hinv = inv(H);
 
-    C = inv(T);
-
-    if method == 2 %bicubic
-
-        # para cada cor
-        for c = 1:colors
-            Dx = derivax(A(:,:,c), h);
-            Dy = derivay(A(:,:,c), h);
-            Dxy = derivaxy(Dy, h);
-
-            # para cada canto esquerdo superior
-            for i = 1:k+1:p-(k+1)
-                for j = 1:k+1:p-(k+1)
-
-                    xl = ceil(i / (k+1));
-                    yl = ceil(j / (k+1));
-                    xr = ceil((i+k+1) / (k+1));
-                    yr = ceil((j+k+1) / (k+1));
-
-                    # keyboard()
-
-                    D = double([ 
-                        A(xl, yl, c),   A(xl, yr, c),  Dy(xl, yl),    Dy(xl, yr); 
-                        A(xr, yl, c),   A(xr, yr, c),  Dy(xr, yl),    Dy(xr, yr);
-                        Dx(xl,yl),      Dx(xl, yr),    Dxy(xl, yl),   Dxy(xl, yr);
-                        Dx(xr, yl),     Dx(xr, yr),    Dxy(xr, yl),   Dxy(xr, yr) 
-                    ]);
-                    
-                    
-                    % Matriz de coeficientes do polinomio intepolador
-                    X = C * D * C';
-                    
-                    lhs = linspace(0, h, k + 2)';
-                    lhs = [ones(1, k+2)', lhs, lhs.^2, lhs.^3];
-                    rhs = linspace(0, h, k + 2);
-                    rhs = [ones(1, k+2); rhs; rhs.^2; rhs.^3];
-
-                    M(i:i+k+1, j:j+k+1, c) = lhs * X * rhs;
-
-                    % Para cada pixel dentro desse quadrado.
-                    % for m = i:i+k+1
-                    %     for n = j:j+k+1
-                    %         % Se não for o pixel original usado para a interpolação.
-                    %             x = ((m-i)/(k+1))*h;
-                    %             y = ((n-j)/(k+1))*h;
-                    %             M(m, n, c) = [1, x, x^2, x^3] * X * [1; y; y^2; y^3];
-                    %     endfor
-                    % endfor
-
-                endfor
-            endfor
-        endfor
+    if (k == 1)
+        p = p - 1;
     endif
 
-    imwrite(uint8(M), 'images/bicubic.png');
-    toc
-    # imwrite(cast(D, 'uint8'), 'isa.png');
-endfunction
+    # para cada cor
+    for c = 1:ncolors
+        Dx = derivax(A(:,:,c), h);
+        Dy = derivay(A(:,:,c), h);
+        Dxy = derivaxy(Dy, h);
 
-for i=1:4:5
-    for j=1:4:5
-        
-        xl = ceil(i / (k+1));
-        yl = ceil(j / (k+1));
-        xr = ceil((i+k+1) / (k+1));
-        yr = ceil((i+k+1) / (k+1));
+        # para cada canto esquerdo superior
+        for i = 1:k+1:p-k+1
+            for j = 1:k+1:p-k+1
 
-        a = derivax(i, j, k, h, p, B);
-        b = derivax(i, j+(k+1), k, h, p, B);
-        c = derivax(i+(k+1), j, k, h, p, B);
-        d = derivax(i+(k+1), j+(k+1), k, h, p, B);
+                xl = ceil(i / (k+1));
+                yl = ceil(j / (k+1));
+                xr = ceil((i+k+1) / (k+1));
+                yr = ceil((j+k+1) / (k+1));
 
-        '---------------'
-        i, j, xl, xr, yl, yr
-        ir = i+k+1
-        jr = j+k+1
+                f = double([ 
+                    A(xl, yl, c),   A(xl, yr, c),  Dy(xl, yl),    Dy(xl, yr); 
+                    A(xr, yl, c),   A(xr, yr, c),  Dy(xr, yl),    Dy(xr, yr);
+                    Dx(xl,yl),      Dx(xl, yr),    Dxy(xl, yl),   Dxy(xl, yr);
+                    Dx(xr, yl),     Dx(xr, yr),    Dxy(xr, yl),   Dxy(xr, yr) 
+                ]);
+                
+                
+                % Matriz de coeficientes do polinomio intepolador
+                X = Hinv * f * Hinv';
+                
+                lhs = linspace(0, h, k + 2)';
+                lhs = [ones(1, k+2)', lhs, lhs.^2, lhs.^3];
+                rhs = linspace(0, h, k + 2);
+                rhs = [ones(1, k+2); rhs; rhs.^2; rhs.^3];
 
-        'luis'
-        [a, b, c, d]
-
-        'vini'
-        [dxV(xl,yl), dxV(xl, yr), dxV(xr, yl), dxV(xr, yr)]
-
+                D(i:i+k+1, j:j+k+1, c) = lhs * X * rhs;
+            endfor
+        endfor
     endfor
-endfor
+endfunction
 
 function Dx = derivax(A, h)
     # A é a matrix original, não expandida

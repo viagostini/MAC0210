@@ -1,13 +1,14 @@
-function err = calculateError (originalImg, decompressedImg)
+function calculateError (originalImg, decompressedImg)
     ori = double(imread(originalImg));
     dec = double(imread(decompressedImg));
 
     ncolors = size(dec, 3);
 
-    err = 0;
+    error = 0;
     for i= 1:ncolors
-        err = err + norm(ori(:, :, i) - dec(:, :, i)) / norm(ori(:, :, i));
+        errC = norm(ori(:, :, i) - dec(:, :, i)) / norm(ori(:, :, i));
+        error = error + errC;
     endfor
 
-    err = err / ncolors;
+    error = error / ncolors
 endfunction

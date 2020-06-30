@@ -1,9 +1,10 @@
 function decompress (compressedImg, method, k, h)
-    
+    tic
     if method == 1
-        bilinear(compressedImg, method, k, h)
+        A = bilinear(compressedImg, k, h);
     else
-        bicubic(compressedImg, method, k, h)
+        A = bicubic(compressedImg, method, k, h);
     endif
-
+    imwrite(A, 'images/func_2_color_k7.png', 'Quality', 100);
+    toc
 endfunction
