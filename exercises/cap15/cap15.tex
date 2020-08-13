@@ -1,0 +1,56 @@
+\documentclass[leqno]{article}
+\usepackage[a4paper, margin=1.5in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage[shortlabels]{enumitem}
+
+\title{MAC0210 - Capítulo 15}
+\author{Vinicius Agostini - 4367487}
+\date{Junho 2020}
+
+\begin{document}
+
+\maketitle
+
+\section*{Exercício 3}
+Seja $\int_a^b f(x)\ dx \approx I_M = (b-a)f(m)$, onde $m = \frac{a+b}{2}$. \\ \\
+Usando Taylor vamos escrever
+$$f(x) = f(m) + f'(m)(x-m) + \frac{f''(\xi)}{2}(x-m)^2, \quad \xi \in [a, b]$$
+
+Agora, vamos calcular o erro da seguinte forma:
+
+\begin{align*}
+    E_M = \left| \int_a^b f(x)\ dx - I_M \right| &= \left| \int_a^b \left[ f(m) + f'(m)(x-m) + \frac{f''(\xi)}{2}(x-m)^2 \right]dx -f(m)(b-a) \right| \\
+                                  &= \left| -f(m)(b-a) + \int_a^b f(m)\ dx + \int_a^b f'(m)(x-m)\ dx + \int_a^b \frac{f''(\xi)}{2}(x-m)^2\ dx \right| \\
+                                  &= \left| \cancel{-f(m)(b-a)} + \cancel{f(m)(b-a)} + f'(m)\int_a^b (x-m)\ dx + \frac{f''(\xi)}{2}\int_a^b (x-m)^2\ dx \right| \\
+    \intertext{Como $m$ é constante, temos que $f'(m) = 0$, logo:}
+    E_M                           &= \left| \frac{f''(\xi)}{2} \cdot \int_a^b (x-m)^2dx \right| = \left| \frac{f''(\xi)}{2} \cdot \left[ \frac{-(m+b)^3}{3} - \frac{-(m+a)^3}{3} \right] \right| \\
+    \intertext{Substituindo novamente $m = \frac{a+b}{2}$, temos:}
+    E_M                           &= \left| \frac{f''(\xi)}{2} \cdot \left[ \frac{(-\frac{a+b}{2}+b)^3}{3} - \frac{(-\frac{a+b}{2}+a)^3}{3} \right] \right| = \left| \frac{f''(\xi)}{2} \cdot \frac{(b-a)^3}{12} \right| \\
+                                  &= \left| \frac{f''(\xi)}{24}(b-a)^3 \right|, \quad \xi \in [a, b].
+\end{align*}
+
+
+
+\section*{Exercício 4}
+    \begin{enumerate}[a)]
+        \item 
+        \item 
+            \begin{enumerate}[1.]
+                \item $\int_0^1 e^x dx = 1.7183$
+                $$ I_{f_0^1}  = \frac{1}{2}(e^0 + e^1) + \frac{1}{12}(e^0 - e^1) $$
+                $$ \left| I_{f_0^1} - \int_0^1 e^x dx\right| = \frac{1}{2}(e^0 + e^1) + \frac{1}{12}(e^0 - e^1) - e^1 + e^0 = 2.33 \cdot 10^{-3}$$
+                
+                \item $\int_{0.9}^1 e^x dx = 0.258679$
+                    $$ I_{f_{0.9}^1}  = \frac{0.1}{2}(e^{0.9} + e^1) + \frac{0.1}{12}(e^{0.9} - e^1) $$
+                    $$ \left| I_{f_{0.9}^1} - \int_{0.9}^1 e^x dx\right| = \frac{0.1}{2}(e^{0.9} + e^1) + \frac{0.1^2}{12}(e^{0.9} - e^1) - e^1 + e^{0.9} = 3.5919 \cdot 10^{-8}$$
+            \end{enumerate}
+
+            Comparando com os erros apresentados no Exemplo 15.2, a versão corrigida
+            da aproximação ficou bem melhor do que a versão simples, só perdendo
+            para a aproximação pelo método de Simpson.
+    \end{enumerate}
+
+\end{document}

@@ -1,0 +1,62 @@
+\documentclass[leqno]{article}
+\usepackage[a4paper, margin=1.5in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+
+\title{MAC0210 - Capítulo 14}
+\author{Vinicius Agostini - 4367487}
+\date{June 2020}
+
+\begin{document}
+
+\maketitle
+
+\section*{Exercício 3}
+
+
+\begin{align*}
+    \begin{split}
+        f(x_0 + h) {}&= f(x_0) + h f'(x_0) + \frac{h^2}{2} f''(x_0) + \frac{h^3}{3!} f'''(x_0) + \frac{h^4}{4!} f^{(4)}(x_0) \\
+        & \hspace{1.8in} + \frac{h^5}{5!} f^{(5)}(x_0) + \frac{h^6}{6!}f^{(6)}(x_0) + \frac{h^7}{7!}f^{(7)}(\xi)
+    \end{split}
+    \\
+    \\
+    \begin{split}
+        f(x_0 + 2h) {}&= f(x_0) + 2h f'(x_0) + \frac{2h^2}{2} f''(x_0) + \frac{2h^3}{3!} f'''(x_0) + \frac{2h^4}{4!} f^{(4)}(x_0) \\
+        & \hspace{1.8in} + \frac{2h^5}{5!} f^{(5)}(x_0) + \frac{2h^6}{6!}f^{(6)}(x_0) + \frac{2h^7}{7!}f^{(7)}(\xi)
+    \end{split}
+    \\
+    \\
+    \begin{split}
+        f(x_0 + 3h) &= f(x_0) + 3h f'(x_0) + \frac{3h^2}{2} f''(x_0) + \frac{3h^3}{3!} f'''(x_0) + \frac{3h^4}{4!} f^{(4)}(x_0) \\
+        & \hspace{1.8in} + \frac{3h^5}{5!} f^{(5)}(x_0) + \frac{3h^6}{6!}f^{(6)}(x_0) + \frac{3h^7}{7!}f^{(7)}(\xi)
+    \end{split}
+    \\
+    \\
+    \begin{split}
+        f(x_0 - h) &= f(x_0) - h f'(x_0) + \frac{h^2}{2} f''(x_0) - \frac{h^3}{3!} f'''(x_0) + \frac{h^4}{4!} f^{(4)}(x_0) \\
+        & \hspace{1.8in} - \frac{h^5}{5!} f^{(5)}(x_0) + \frac{h^6}{6!}f^{(6)}(x_0) - \frac{h^7}{7!}f^{(7)}(\xi)
+    \end{split}
+    \\
+    \\
+    \begin{split}
+        f(x_0 - 2h) {}&= f(x_0) - 2h f'(x_0) + \frac{2h^2}{2} f''(x_0) - \frac{2h^3}{3!} f'''(x_0) + \frac{2h^4}{4!} f^{(4)}(x_0) \\
+        & \hspace{1.8in} - \frac{2h^5}{5!} f^{(5)}(x_0) + \frac{2h^6}{6!}f^{(6)}(x_0) - \frac{2h^7}{7!}f^{(7)}(\xi)
+    \end{split}
+    \\
+    \\
+    \begin{split}
+        f(x_0 - 3h) &= f(x_0) - 3h f'(x_0) + \frac{3h^2}{2} f''(x_0) - \frac{3h^3}{3!} f'''(x_0) + \frac{3h^4}{4!} f^{(4)}(x_0) \\
+        & \hspace{1.8in} - \frac{3h^5}{5!} f^{(5)}(x_0) + \frac{3h^6}{6!}f^{(6)}(x_0) - \frac{3h^7}{7!}f^{(7)}(\xi)
+    \end{split}
+\end{align*}
+
+\newpage
+
+\begin{align*}
+    f(x_0 - h) + f(x_0 + h) &= 2f(x_0) + h^2 f''(x_0) + \frac{h^4}{12} f^{(4)}(x_0) + \frac{h^6}{360}f^{(6)}(x_0) \\
+    f(x_0 - 2h) + f(x_0 + 2h) &= 2f(x_0) + 2h^2 f''(x_0) + \frac{h^4}{8} f^{(4)}(x_0) + \frac{h^6}{180}f^{(6)}(x_0) \\
+    f(x_0 - 3h) + f(x_0 + 3h) &= 2f(x_0) + 4h^2 f''(x_0) + \frac{h^4}{4} f^{(4)}(x_0) + \frac{h^6}{90}f^{(6)}(x_0) \\
+\end{align*}
+
+\end{document}
