@@ -9,12 +9,12 @@ function generate (p)
     [XI, YI] = meshgrid(1:p, 1:p);
     
     A(:,:,1) = rfunc(XI, YI);
-    A(:,:,2) = gfunc(XI, YI);
-    A(:,:,3) = bfunc(XI, YI);
+    A(:,:,2) = rfunc(XI, YI);
+    A(:,:,3) = rfunc(XI, YI);
 
     # keyboard()
 
-    imwrite(A, 'images/func_2_color_2.png');
+    imwrite(A, 'images/func_test.png');
 
 endfunction
 
