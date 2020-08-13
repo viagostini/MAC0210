@@ -26,15 +26,29 @@ double monte_carlo (int iters, function func) {
     return sum / iters;
 }
 
-int main() {
+int main(int argc, char **argv) {
+    int iters;
     double res;
     
-    res = monte_carlo(1e7, &sin);
-    printf("%f\n", res);
+    if (argc != 1 && argc != 2) {
+        printf("Uso: ./monte_carlo_1d iters\n");
+        exit(EXIT_FAILURE);
+    }
 
-    res = monte_carlo(1e7, &x3);
-    printf("%f\n", res);
+    if (argc == 1)
+        iters = 1e7;
+    else
+        iters = atoi(argv[1]);
 
-    res = monte_carlo(1e7, &e);
-    printf("%f\n", res);
+
+    printf("iters = %d\n", iters);
+
+    res = monte_carlo(iters, &sin);
+    printf("1) %f\n", res);
+
+    res = monte_carlo(iters, &x3);
+    printf("2) %f\n", res);
+
+    res = monte_carlo(iters, &e);
+    printf("3) %f\n\n", res);
 }

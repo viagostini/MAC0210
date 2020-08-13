@@ -1,0 +1,146 @@
+\documentclass[leqno]{article}
+\usepackage[a4paper, margin=1.3in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{indentfirst}
+
+\title{MAC0210 - Exercício-Programa 3}
+\author{Vinicius Agostini - 4367487}
+\date{Julho 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Computando Trabalho}
+A primeira tarefa do EP é aproximar a quantidade de trabalho exercida estimando
+a integral $\int_{x_0}^{x_n}F(x)\cos(\theta(x))dx$, primeiro interpolando os valores
+fornecidos. O método de interpolação escolhido foi o método de Lagrange. Então,
+devemos usar esses valores para estimar a integral usando a regra do
+trapézio composto e a regra de Simpson composto.
+
+Para fazer a interpolação, decidi dividir o intervalo $[0,30]$ em $n-1$ intervalos
+e calculei os $n$ pontos resultantes através de uma função que executa a interpolação
+pelo método de Lagrange. \\
+
+Resultados:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|}
+    \cline{2-6}
+                                      & $n = 7$    & $n = 19$   & $n = 61$   & $n = 100$  & $n = 500$  \\ \hline
+    \multicolumn{1}{|c|}{Trapezoidal} & 119.089250 & 117.347276 & 117.151007 & 117.138741 & 117.131902 \\ \hline
+    \multicolumn{1}{|c|}{Simpson}     & 117.127167 & 117.069079 & 117.131612 & 117.069079 & 117.123476 \\ \hline
+    \end{tabular}
+    \end{table}
+
+Inicialmente achei que deveria utilizar valores de $n$ tal que $n = 6k + 1$ para
+obter melhores aproximações já que dessa forma garantiríamos que os pontos originais
+estariam presentes no conjunto de pontos interpolados e que isso seria uma coisa
+boa, porém, conforme $n$ aumenta, isso não se mostrou um fator tão importante.
+No caso da regra de Simpson, o erro relacionado a utilizar uma quantidade par
+ou ímpar de intervalos também se torna negligenciável conforme $n$ aumenta.
+\\
+
+\textbf{Uso do programa:}
+
+\texttt{gcc trabalho.c -o trabalho}
+
+\texttt{./trabalho a b n}, para calcular $\int_a^b F(x)\cos(\theta(x))dx$ com
+$n$ pontos, interpolando a partir da tabela do enunciado.
+
+\textbf{Exemplo:}
+
+\texttt{./trabalho 0 30 19} (1 ponto interpolado entre cada ponto dado).
+
+\section{Integração por Monte Carlo}
+
+\subsection{Integrais unidimensionais}
+Nesta seção do EP devemos calcular uma aproximação para integrais unidimensionais
+como $I = \int_0^1 g(x) dx$ escolhendo pontos aleatórios $U_i$ no intervalo $[0,1]$ e
+calculando $\hat{I} = \sum_{i=1}^n \frac{g(U_i)}{n}$, que, pela Lei Forte dos
+Grandes Números, se aproxima de $I$ quando $n \to \infty$. No caso de integrais
+em intervalos arbitrários $[a,b]$ é possível realizar uma troca de variável para
+resolver uma integral no intervalo $[0,1]$ que tenha resultado equivalente. \\
+
+Integrais a serem resolvidas e trocas de variável utilizadas:
+\begin{align}
+    &\int_0^1 \sin(x) dx \\
+    \int_3^7 x^3 dx &= \int_0^1 4 \cdot (4y+3)^3 dy, \qquad \text{com } y = \frac{x-3}{4}\\
+    \int_0^\infty e^{-x} dx &= \int_0^1 \frac{e^{1-\frac 1y}}{y^2} dy, \qquad \text{com } y = \frac{1}{1+x}
+\end{align}
+
+
+Resultados:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|}
+    \cline{2-6}
+                            & $10^4$ & $10^5$ & $10^6$ & $10^7$ & Valor esperado \\ \hline
+    \multicolumn{1}{|c|}{$\int_0^1 \sin(x) dx$} &  0.456837          &  0.459729          &  0.459457      &  0.459850   & $\approx$ 0.45970  \\ \hline
+    \multicolumn{1}{|c|}{$\int_0^1 4 \cdot (4y+3)^3 dy$} &  575.820989        &  580.472969        &  580.176466    &  580.232532 &  580               \\ \hline
+    \multicolumn{1}{|c|}{$\int_0^1 \frac{e^{1-\frac 1y}}{y^2} dy$} &  0.996641          &  0.999422          &  0.999720      &  1.000108   &  1                 \\ \hline
+    \end{tabular}
+\end{table}
+
+Para esta parte foi implementada uma função única para o método de Monte Carlo
+que recebe uma função como parâmetro com assinatura
+\textbf{monte\_carlo(int iters, function func)} onde \textbf{iters}
+é a quantidade de iterações a serem realizadas e \textbf{func} uma função que
+recebe um double e retorna um double. A definição do tipo \textbf{function} foi criada
+a partir do comando \textbf{typedef double (*function)(double)}.
+\\
+
+\textbf{Uso do programa:}
+
+\texttt{gcc monte\_carlo\_1d.c -o monte\_carlo\_1d}
+
+\texttt{./monte\_carlo\_1d iters}
+
+\textbf{Exemplo:}
+
+\texttt{./monte\_carlo\_1d 1000}
+
+
+\subsection{Integrais multidimensionais}
+Aqui o objetivo é encontrar uma estimativa para o valor de $\pi$. O método utilizado
+é considerar a parte do círculo unitario que está no primeiro quadrante e calcular
+sua área por Monte Carlo da seguinte forma, como definido no enunciado:
+
+\begin{align*}
+    g(x,y) &= \begin{cases}
+        1, \text{   se } x^2 + y^2 \leq 1 \\
+        0, \text{   caso contrário}
+    \end{cases}\\
+    \\
+    \pi &= 4 \cdot \int_0^1\int_0^1 g(x,y)dxdy
+\end{align*}
+
+Resultados:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|}
+    \cline{2-2}
+                                     & $\approx \pi$ \\ \hline
+    \multicolumn{1}{|c|}{$n = 10^4$} & 3.142400      \\ \hline
+    \multicolumn{1}{|c|}{$n = 10^5$} & 3.144680      \\ \hline
+    \multicolumn{1}{|c|}{$n = 10^6$} & 3.140356      \\ \hline
+    \multicolumn{1}{|c|}{$n = 10^7$} & 3.141540      \\ \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Uso do programa:}
+
+\texttt{gcc pi.c -o pi}
+
+\texttt{./pi iters}
+
+\textbf{Exemplo:}
+
+\texttt{./pi 1000}
+
+\end{document}

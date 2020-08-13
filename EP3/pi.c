@@ -19,10 +19,21 @@ double monte_carlo_pi (int iters) {
     return 4.0 * inside / iters;
 }
 
-int main() {
-    int iters = (int) 1e7;
+int main(int argc, char **argv) {
+    int iters;
+
+    if (argc != 1 && argc != 2) {
+        printf("Uso: ./pi iters\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (argc == 1)
+        iters = 1e7;
+    else
+        iters = atoi(argv[1]);
 
     double pi = monte_carlo_pi(iters);
 
+    printf("iters = %d\n", iters);
     printf("Pi = %f\n", pi);
 }
